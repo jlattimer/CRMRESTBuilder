@@ -3796,7 +3796,7 @@ Xrm.RESTBuilder.BuildObjectString_WebApi = function () {
 		if (field.length === 0) {
 			continue;
 		}
-		var logical = field[0].LogicalName;
+		var logical = field[0].SchemaName;
 		var val1 = $(tr).find("input:first").val();
 		var sel1 = $(tr).find("select:eq(1)").val();
 
