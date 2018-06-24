@@ -3586,21 +3586,27 @@ Xrm.RESTBuilder.GenerateResultVars_WebApi = function (selects, expand, spaces) {
 			var field = selectFields[i];
 			if (field.indexOf("_value") !== -1) {
 				field = field.substring(1, field.length - 6);
-			}
-			var selectType = $.grep(Xrm.RESTBuilder.CurrentEntityAttributes, function (e) { return e.LogicalName === field; })[0].AttributeType;
-			output.push(pre + "var " + Xrm.RESTBuilder.GenerateResultVarName(selectFields[i]) + " = result" + index + "[\"" + selectFields[i] + "\"];\n");
+            }
 
-			if (Xrm.RESTBuilder.FormattedValues) {
-				if (selectType !== null && selectType !== undefined) {
-					if (selectType === "Picklist" || selectType === "Money" || selectType === "Boolean" || selectType === "Integer" || selectType === "Double" || selectType === "Decimal" ||
-						selectType === "State" || selectType === "Owner" || selectType === "Customer" || selectType === "Lookup") {
-						output.push(pre + "var " + Xrm.RESTBuilder.GenerateResultVarName(selectFields[i] + "_formatted = result") + index + "[\"" + selectFields[i] + "@OData.Community.Display.V1.FormattedValue\"];\n");
-						if (selectType === "Owner" || selectType === "Customer" || selectType === "Lookup") {
-							output.push(pre + "var " + Xrm.RESTBuilder.GenerateResultVarName(selectFields[i] + "_lookuplogicalname = result") + index + "[\"" + selectFields[i] + "@Microsoft.Dynamics.CRM.lookuplogicalname\"];\n");
-						}
-					}
-				}
-			}
+            if (selectType === "Owner" || selectType === "Customer" || selectType === "Lookup") {
+                output.push(pre + "var " + Xrm.RESTBuilder.GenerateResultVarName(selectFields[i]) + " = {\n");
+                output.push(pre + "     id: result" + index + "[\"" + selectFields[i] + "\"],\n");
+                output.push(pre + "     name: result" + index + "[\"" + selectFields[i] + "@OData.Community.Display.V1.FormattedValue\"],\n");
+                output.push(pre + "     entityType: result" + index + "[\"" + selectFields[i] + "@Microsoft.Dynamics.CRM.lookuplogicalname\"]};\n");
+            }
+            else {
+                var selectType = $.grep(Xrm.RESTBuilder.CurrentEntityAttributes, function (e) { return e.LogicalName === field; })[0].AttributeType;
+                output.push(pre + "var " + Xrm.RESTBuilder.GenerateResultVarName(selectFields[i]) + " = result" + index + "[\"" + selectFields[i] + "\"];\n");
+
+                if (Xrm.RESTBuilder.FormattedValues) {
+                    if (selectType !== null && selectType !== undefined) {
+                        if (selectType === "Picklist" || selectType === "Money" || selectType === "Boolean" || selectType === "Integer" || selectType === "Double" || selectType === "Decimal" ||
+                            selectType === "State") {
+                            output.push(pre + "var " + Xrm.RESTBuilder.GenerateResultVarName(selectFields[i] + "_formatted = result") + index + "[\"" + selectFields[i] + "@OData.Community.Display.V1.FormattedValue\"];\n");
+                        }
+                    }
+                }
+            }
 		}
 	}
 
