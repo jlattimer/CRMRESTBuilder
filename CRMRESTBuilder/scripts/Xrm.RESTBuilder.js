@@ -3182,7 +3182,12 @@ Xrm.RESTBuilder.Action_Function_XrmWebApi = function (action, parameters, operat
 	js.push("    function success(result) {");
 	js.push("        if (result.ok) {\n");
 	if (action.ReturnTypes.length > 0)
-		js.push("            var results = JSON.parse(result.responseText);\n");
+	{
+		js.push("            result.json().then(\n");
+		js.push("                 function (response) {\n");
+		js.push("            						/*CODE*/	  ");
+		js.push("            		});	");	
+	}
 	else
 		js.push("            // Success - No Return Data - Do Something\n");
 	js.push("        }");
@@ -3193,7 +3198,7 @@ Xrm.RESTBuilder.Action_Function_XrmWebApi = function (action, parameters, operat
 	js.push(");");
 
 	if (action.ReturnTypes.length > 0)
-		Xrm.RESTBuilder.ReplaceLine = "var results = JSON.parse(result.responseText);"
+		Xrm.RESTBuilder.ReplaceLine = " result.json().then(function (response) { /*CODE*/   });"
 	else
 		Xrm.RESTBuilder.ReplaceLine = "// Success - No Return Data - Do Something\n";
 	Xrm.RESTBuilder.ErrorReplaceLine = "function(error) {";
